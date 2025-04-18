@@ -1,12 +1,32 @@
-# React + Vite
+# 3D Furniture Designer Web App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive web application that allows users to design custom furniture layouts in 2D and visualize them in 3D using modern web technologies.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+-  Draw 2D layouts using shape-based tools
+-  Render designs in interactive 3D using Three.js
+-  Customize colors, sizes, and layout positioning
+-  User authentication with Supabase (sign up / login)
+-  Save and manage personal design projects in the cloud
+-  Built with a modern tech stack for speed and flexibility
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Installation & Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/HCI-Project-Group-61/3D-furniture.git
+   cd 3d-furniture
+2. **Install dependencies**
+   ```bash
+   npm install
+3. **Run the development server**
+   ```bash
+   npm run dev
+
+
+
