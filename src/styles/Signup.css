@@ -1,0 +1,252 @@
+/* GLOBAL RESET */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Background */
+.signup-page-background {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(
+      252deg,
+      rgba(0, 0, 0, 0.2) 0%,
+      rgba(148, 148, 148, 0.2) 23.08%,
+      rgba(0, 0, 0, 0.2) 50.96%,
+      rgba(148, 148, 148, 0.2) 76.44%,
+      rgba(0, 0, 0, 0.2) 100%
+    ),
+    linear-gradient(
+      108deg,
+      #0d0d0d 0%,
+      #363636 21.63%,
+      #000 46.15%,
+      #404040 76.92%,
+      #141414 100%
+    );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+}
+
+.top-left-logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+    z-index: 10; 
+  }
+  
+  .logo {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .app-name {
+    font-size: 1rem;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  
+
+/* Layout */
+.signup-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem; 
+  width: 100%;
+  max-width: 1300px;
+  position: relative;
+}
+
+/* Images */
+.left-image, .right-image {
+  max-width: 280px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  z-index: 2;
+}
+
+/* Signup Card */
+.signup-card {
+  position: relative; 
+  width: 100%;
+  max-width: 440px;
+  padding: 32px;
+  border-radius: 40px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0px 4px 35px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(7.5px);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Arrow inside Card */
+.arrow-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+/* Header (Sign up & Sign in) */
+.signup-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  z-index: 2;
+}
+
+.signup-title {
+  font-size: 2.25rem;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+}
+
+.signin-link {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.signin-link p {
+  color: #a0a0a0;
+  font-size: 0.875rem;
+  margin: 0 0 4px 0;
+}
+
+.signin-link a {
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+/* Signup Form */
+.signup-form {
+  width: 100%;
+  z-index: 2;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  z-index: 2;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.half {
+  width: 50%;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: white;
+  font-size: 0.95rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: rgb(255, 255, 255);
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+.form-group input::placeholder {
+    color: #949393; 
+    opacity: 1;
+  }
+  
+/* Buttons */
+.signup-button,
+.google-button {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  border-radius: 15px;
+  background: linear-gradient(90deg, #333 0%, #767676 100%);
+  box-shadow: -3px 3px 8px rgba(0, 0, 0, 0.25),
+    -3px 3px 5px #949494 inset;
+  margin-top: 1rem;
+  z-index: 2;
+}
+
+.signup-button:hover,
+.google-button:hover {
+  background: linear-gradient(90deg, #555 0%, #999 100%);
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  width: 100%;
+  z-index: 2;
+}
+
+.line {
+  flex-grow: 1;
+  height: 1px;
+  background-color: #555;
+}
+
+.divider span {
+  padding: 0 16px;
+  color: #a0a0a0;
+  font-size: 0.875rem;
+}
+
+/* Google Button */
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.google-button svg {
+  margin-right: 8px;
+}
+
+/* Responsive for Mobile */
+@media (max-width: 768px) {
+  .signup-layout {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .arrow-image {
+    transform: translate(-50%, -50%) rotate(90deg);
+    width: 300px;
+  }
+}
