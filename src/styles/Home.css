@@ -1,4 +1,4 @@
-/* Base page layout */
+/* General styles */
 html,
 body {
   margin: 0;
@@ -9,19 +9,294 @@ body {
 }
 
 .home-page {
-  background-color: #0f0f0f;
   color: white;
   min-height: 100vh;
   width: 100%;
 }
-.container {
+
+.home-container {
   max-width: 100%;
 }
 
-/* Hero section content */
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Hero Section */
 .hero-section {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   min-height: 100vh;
+  padding: 6rem 1rem 3rem;
+  background: linear-gradient(
+      252deg,
+      rgba(0, 0, 0, 0.2) 0%,
+      rgba(148, 148, 148, 0.2) 23.08%,
+      rgba(0, 0, 0, 0.2) 50.96%,
+      rgba(148, 148, 148, 0.2) 76.44%,
+      rgba(0, 0, 0, 0.2) 100%
+    ),
+    linear-gradient(
+      108deg,
+      #0d0d0d 0%,
+      #363636 21.63%,
+      #000 46.15%,
+      #404040 76.92%,
+      #141414 100%
+    );
+  position: relative; /* Added for navbar overlay */
+}
+
+.hero-content {
+  max-width: 800px;
+  /* Add top padding to accommodate the navbar */
+  padding-top: 2rem;
+}
+
+.hero-content h2 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+}
+
+.hero-content h1 {
+  font-size: 5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  background: linear-gradient(90deg, #999 0%, #fff 50%, #999 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.features-tags {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.feature-tag {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #9e9e9e;
+}
+
+.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: #9e9e9e;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn {
+  font-size: 0.9rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primary-btn {
+  width: 140px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(to right, #555555, #dddddd, #555555, #555555, #dddddd, #555555);
+  background-size: 250%;
+  background-position: left;
+  color: #fafaf9;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-position 1s ease;
+  overflow: hidden;
+  padding: 0;
+}
+
+.primary-btn::before {
+  position: absolute;
+  content: "Get Started";
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 97%;
+  height: 90%;
+  border-radius: 8px;
+  transition: background-position 1s ease;
+  background-color: rgba(0, 0, 0, 0.842);
+  background-size: 200%;
+  font-size: 14px;
+}
+
+.primary-btn:hover {
+  background-position: right;
+}
+
+.primary-btn:hover::before {
+  background-position: right;
+}
+
+.primary-btn:active {
+  transform: scale(0.95);
+}
+
+.secondary-btn {
+  background-color: transparent;
+  color: #9e9e9e;
+}
+
+.outline-btn {
+  background-color: transparent;
+  border: 1px solid #666;
+  color: white;
+  border-radius: 1.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.8rem;
+}
+
+/* Sketch Section */
+.sketch-section {
+  padding: 4rem 2rem;
+  text-align: center;
+  position: relative;
+  background-color: #121212;
+}
+
+.sketch-section h2,
+.rendered-view-title {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.dotted-line {
+  width: 240px;
+  height: 1px;
+  background-image: linear-gradient(to right, #666 50%, transparent 50%);
+  background-size: 8px 1px;
+  background-repeat: repeat-x;
+  margin: 0 auto 3rem;
+}
+
+.sketch-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sketch-image-container {
+  flex: 1;
+  text-align: right;
+  padding-right: 2rem;
+}
+
+.sketch-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.sketch-description {
+  flex: 1;
+  text-align: left;
+  padding-left: 2rem;
+}
+
+.sketch-description h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.arrow-path {
+  position: relative;
+  height: 150px;
+  margin: 2rem 0;
+}
+
+.arrow-image {
+  width: 180px;
+  position: absolute;
+  right: 50%;
+  transform: translateX(50%);
+}
+
+/* 3D Rendered View Section */
+.rendered-view-section {
+  padding: 2rem 2rem 6rem;
+  text-align: center;
+  position: relative;
+  background-color: #121212;
+}
+
+.rendered-view-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto 4rem;
+}
+
+.rendered-view-description {
+  flex: 1;
+  text-align: right;
+  padding-right: 2rem;
+}
+
+.rendered-view-description h2 {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.rendered-view-image-container {
+  flex: 1;
+  text-align: left;
+  padding-left: 2rem;
+}
+
+.rendered-view-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.rendered-view-title {
+  margin-top: 3rem;
+}
+
+/* Why Choose Us Section */
+.why-choose-us-section {
+  padding: 6rem 2rem;
+  text-align: center;
   background: linear-gradient(
       252deg,
       rgba(0, 0, 0, 0.2) 0%,
@@ -40,8 +315,97 @@ body {
     );
 }
 
-.hero-section h1 {
+.why-choose-us-section h1 {
   font-size: 2.5rem;
-  font-weight: bold;
-  margin-top: 2rem;
+  margin-bottom: 4rem;
+}
+
+.features-container {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+.feature-card {
+  flex: 1;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.feature-icon {
+  background-color: transparent;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+.feature-icon img {
+  width: 64px;
+  height: 64px;
+}
+
+.feature-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card p {
+  font-size: 0.9rem;
+  color: #9e9e9e;
+  line-height: 1.6;
+}
+
+
+
+/* Responsive Media Queries */
+@media (max-width: 992px) {
+  .sketch-content,
+  .rendered-view-content {
+    flex-direction: column;
+  }
+
+  .sketch-image-container,
+  .sketch-description,
+  .rendered-view-description,
+  .rendered-view-image-container {
+    text-align: center;
+    padding: 1rem 0;
+  }
+
+  .features-container {
+    flex-direction: column;
+  }
+
+  .feature-card {
+    margin-bottom: 2rem;
+  }
+
+  .hero-content {
+    padding-top: 3rem; 
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero-content h2 {
+    font-size: 2rem;
+  }
+
+  .features-tags {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .hero-content {
+    padding-top: 4rem; 
+  }
 }
