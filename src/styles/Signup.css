@@ -34,41 +34,41 @@
 }
 
 .top-left-logo {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px; 
-    z-index: 10; 
-  }
-  
-  .logo {
-    width: 32px;
-    height: 32px;
-  }
-  
-  .app-name {
-    font-size: 1rem;
-    color: white;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-  
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+}
+
+.app-name {
+  font-size: 1rem;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
 
 /* Layout */
 .signup-layout {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4rem; 
+  gap: 4rem;
   width: 100%;
   max-width: 1300px;
   position: relative;
 }
 
 /* Images */
-.left-image, .right-image {
+.left-image,
+.right-image {
   max-width: 280px;
   width: 100%;
   height: auto;
@@ -78,7 +78,7 @@
 
 /* Signup Card */
 .signup-card {
-  position: relative; 
+  position: relative;
   width: 100%;
   max-width: 440px;
   padding: 32px;
@@ -175,13 +175,19 @@
   border-radius: 6px;
   background-color: rgb(255, 255, 255);
   font-size: 1rem;
+  color: black; /* ✅ Fix: Make text visible while typing */
   box-sizing: border-box;
 }
+
 .form-group input::placeholder {
-    color: #949393; 
-    opacity: 1;
-  }
-  
+  color: #949393;
+  opacity: 1;
+}
+
+.form-group input:focus {
+  outline: 2px solid #888; /* Optional: Add focus border */
+}
+
 /* Buttons */
 .signup-button,
 .google-button {
