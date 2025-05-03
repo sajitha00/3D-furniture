@@ -1,0 +1,135 @@
+.navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 6;
+  background-color: transparent;
+  backdrop-filter: blur(5px);
+  padding: 1rem 0;
+  transition: all 0.3s ease;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem; 
+  width: 100%;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  
+}
+
+.logo-image {
+  height: 36px;
+  width: auto;
+  margin-right: 0.75rem;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(90deg, #999 0%, #fff 50%, #999 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.navbar-profile {
+  position: relative;
+  
+}
+
+.profile-icon {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.profile-icon:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.user-icon {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 180px;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  z-index: 7;
+}
+
+.dropdown-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-menu li {
+  padding: 0.75rem 1.25rem;
+  color: #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-menu li:hover {
+  background-color: #333;
+}
+
+.dropdown-divider {
+  border-top: 1px solid #333;
+  margin: 0.25rem 0;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0 1rem;
+  }
+  
+  .logo-text {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-text {
+    font-size: 1rem;
+  }
+  
+  .logo-image {
+    height: 28px;
+  }
+  
+  .profile-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .user-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
