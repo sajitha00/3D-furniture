@@ -1,0 +1,15 @@
+
+.account-page {
+  display: flex;
+  flex: 1;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+
+  @media (max-width: 768px) {
+    .account-page {
+      flex-direction: column;
+    }
+  }
+  
