@@ -1,64 +1,63 @@
 
 .sidebar {
-    background: #1e1e1e;
-    color: white;
-    width: 350px;
-    min-height: 85vh;
-    padding: 2rem 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  
-  .sidebar h2 {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-  }
-  
-  .sidebar nav button {
-    display: block;
-    background: transparent;
-    color: white;
-    border: none;
-    padding: 0.8rem 0;
-    text-align: left;
+  background: #1e1e1e;
+  color: white;
+  width: 350px;
+  min-height: 85vh;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar h2 {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.sidebar nav button {
+  display: block;
+  background: transparent;
+  color: white;
+  border: none;
+  padding: 0.8rem 0;
+  text-align: left;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.sidebar nav .active {
+  background: #3a3a3a;
+  border-radius: 8px;
+  padding-left: 0.5rem;
+}
+
+.sidebar .logout {
+  margin-top: auto;
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
     width: 100%;
-    font-size: 1rem;
-    cursor: pointer;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 1rem;
+    height: auto;
   }
-  
-  .sidebar nav .active {
-    background: #3a3a3a;
-    border-radius: 8px;
-    padding-left: 0.5rem;
+
+  .sidebar nav button {
+    padding: 0.5rem;
+    font-size: 0.9rem;
   }
-  
+
   .sidebar .logout {
-    margin-top: auto;
-    background: transparent;
-    color: white;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
+    margin-top: 0;
   }
-  
-  @media (max-width: 768px) {
-    .sidebar {
-      width: 100%;
-      flex-direction: row;
-      justify-content: space-around;
-      align-items: center;
-      padding: 1rem;
-      height: auto;
-    }
-  
-    .sidebar nav button {
-      padding: 0.5rem;
-      font-size: 0.9rem;
-    }
-  
-    .sidebar .logout {
-      margin-top: 0;
-    }
-  }
-  
+}
