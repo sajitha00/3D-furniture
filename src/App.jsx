@@ -19,8 +19,6 @@ function App() {
         <Route path="/test" element={<Test />} />
         <Route path="/design" element={<DesignPage />} />
       </Routes>
-      <AccountCenter />
-      <Signup />
     </BrowserRouter>
   );
 }

@@ -47,6 +47,19 @@ body,
   border-radius: 4px;
   cursor: pointer;
 }
+.dp-delete-btn {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+.dp-delete-btn:hover {
+  background: #d9363e;
+}
 
 /* ─ BODY ─ */
 .dp-body {
@@ -59,7 +72,7 @@ body,
 
 /* ─ SIDEBAR ─ */
 .dp-sidebar {
-  width: 240px;
+  width: 270px;
   background: #222;
   color: #eee;
   padding: 16px;

@@ -11,6 +11,7 @@ export default function Furniture3D({
   h,
   pxPerUnit,
   rawScale = 1,
+  scaleFix = 1,
 }) {
   const { scene } = useGLTF(`/models/${type}.glb`)
 
@@ -27,7 +28,8 @@ export default function Furniture3D({
   // uniform scale → fits declared w×h footprint
   const scaleX      = (w * pxPerUnit) / size.x
   const scaleZ      = (h * pxPerUnit) / size.z
-  const uniformScale = Math.min(scaleX, scaleZ) * rawScale
+  const uniformScale = Math.min(scaleX, scaleZ) * rawScale * (scaleFix || 1);
+
 
   // now lift so that the *bottom* (min.y) is at world y=0
   const yOffset = -min.y * uniformScale
@@ -36,10 +38,10 @@ export default function Furniture3D({
     <Suspense fallback={null}>
       <group position={position} rotation={rotation}>
         <primitive
-          object={scene}
+          object={useMemo(() => scene.clone(true), [scene])}
           position={[
             -center.x * uniformScale,
-             yOffset,
+            yOffset,
             -center.z * uniformScale,
           ]}
           scale={[uniformScale, uniformScale, uniformScale]}
