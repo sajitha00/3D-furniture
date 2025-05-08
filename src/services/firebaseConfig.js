@@ -20,4 +20,5 @@ const firestore = getFirestore(app);
 const storage = getStorage(app);
 const auth = getAuth(app); // ✅ Initialize Auth
 
-export { app, firestore, storage, auth }; // ✅ Export Auth
+export { app, firestore, storage, auth, }; // ✅ Export Auth
+export const db = getFirestore(app);

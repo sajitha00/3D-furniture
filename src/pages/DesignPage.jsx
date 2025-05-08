@@ -1,5 +1,3 @@
-// ✅ DesignPage.jsx (UPDATED WITH FLOOR COLOR & CLEANUP)
-
 import React, { useState } from "react";
 import { useLocation, Navigate } from "react-router-dom";
 import { CirclePicker } from "react-color";
@@ -8,6 +6,8 @@ import Canvas3d from "../components/Canvas3d/Canvas3d";
 import logo from "../assets/LOGO.svg";
 import "../styles/DesignPage.css";
 import { FURNITURE_ICONS } from "../data/furnitureMetadata";
+import {db} from "../services/firebaseConfig";
+import { collection, addDoc } from "firebase/firestore";
 
 const COLOURS = [
   "#FF4136", "#FF0080", "#B10DC9", "#85144b",
@@ -59,6 +59,35 @@ export default function DesignPage() {
     );
   };
 
+  //save function
+  const saveDesign = async () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user || !user.uid) {
+    alert("You must be signed in to save a design.");
+    return;
+  }
+
+  const designData = {
+    width,
+    length,
+    unit,
+    wallHeight,
+    wallColor,
+    floorColor,
+    furnitures,
+    createdAt: new Date().toISOString(),
+    userId: user.uid,          // associate with user
+    userEmail: user.email,
+  };
+
+  try {
+    await addDoc(collection(db, "designs"), designData);
+    alert("Design saved successfully!");
+  } catch (err) {
+    alert("Failed to save design: " + err.message);
+  }
+};
+
   return (
     <div className="design-page">
       <header className="dp-header">
@@ -78,7 +107,7 @@ export default function DesignPage() {
               🗑 Delete
             </button>
           )}
-          <button className="dp-save-btn">Save</button>
+          <button className="dp-save-btn" onClick={saveDesign}>Save</button>
         </div>
       </header>
 

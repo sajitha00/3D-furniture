@@ -5,12 +5,14 @@ import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
 import CanvasSetupPopup from "../components/CanvasSetupPopup/CanvasSetupPopup";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const Home = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [width, setWidth] = useState("");
   const [length, setLength] = useState("");
   const [unit, setUnit] = useState("ft");
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   const handleOpenPopup = () => setIsPopupOpen(true);
@@ -21,19 +23,22 @@ const Home = () => {
   };
 
   const handleCreate = () => {
-    // Navigate *before* clearing so state is read correctly
+   // Navigate *before* clearing so state is read correctly
+    if (!user) {
+      // not signed in – send them to login (optionally preserve intent)
+      navigate("/signin", { replace: true, state: { from: "/" } });
+      return;
+    }
+
+    // signed‑in → go to design page
     navigate("/design", {
-      state: {
-        width:  Number(width),
-        length: Number(length),
-        unit,
-      },
+      state: { width: Number(width), length: Number(length), unit },
     });
-    // then clear and close
-    setWidth("");
-    setLength("");
-    setIsPopupOpen(false);
-  };
+
+     setWidth("");
+     setLength("");
+     setIsPopupOpen(false);
+   };
 
 
   return (
