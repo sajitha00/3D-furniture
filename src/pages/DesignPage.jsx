@@ -46,6 +46,7 @@ export default function DesignPage() {
         rotX: 0,
         rotZ: 0,
         rawScale,
+        scaleFix: 1,
       },
     ]);
   };
@@ -127,6 +128,31 @@ export default function DesignPage() {
               </label>
             </section>
           )}
+
+          {selectedId && (
+            <section className="dp-section">
+              <h3>Scale</h3>
+              <label>
+                Resize (0.5× to 2×)
+                <input
+                  type="range"
+                  min={0.5}
+                  max={2}
+                  step={0.01}
+                  value={furnitures.find(f => f.id === selectedId)?.scaleFix || 1}
+                  onChange={(e) => {
+                    const newScale = parseFloat(e.target.value);
+                    setFurnitures((prev) =>
+                      prev.map((f) =>
+                        f.id === selectedId ? { ...f, scaleFix: newScale } : f
+                      )
+                    );
+                  }}
+                />
+              </label>
+            </section>
+          )}
+
 
           <section className="dp-section">
             <h3>Paint</h3>

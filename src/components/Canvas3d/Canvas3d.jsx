@@ -54,16 +54,22 @@ export default function Canvas3d({
   const offsetZ = -halfL;
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
+    <div style={{
+      width: '100%',
+      height: '100%',
+      background: 'linear-gradient(to bottom,rgb(66, 66, 66), #1a1a1a)', 
+    }}
+    >
       <Canvas
         shadows
         camera={{
           position: [0, wallHeight * pxPerUnit * 0.75, roomL + 200],
           fov: 50,
         }}
+        style={{ background: 'transparent' }}
       >
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 10, 5]} intensity={1} castShadow />
+        <ambientLight intensity={0.8} />
+        <directionalLight position={[5, 20, 10]} intensity={1.5} castShadow />
         <OrbitControls
           enablePan={isPanning}
           enableZoom
