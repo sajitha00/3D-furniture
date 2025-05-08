@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import * as THREE from 'three';
-import Furniture3D from './Furniture3d';
+import React, { useState, useEffect } from "react";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
+import * as THREE from "three";
+import Furniture3D from "./Furniture3d";
 
 const MODEL_ORIENTATION_FIX = {
   chair: 0,
@@ -29,17 +29,17 @@ export default function Canvas3d({
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.code === 'Space') setIsPanning(true);
+      if (e.code === "Space") setIsPanning(true);
     };
     const handleKeyUp = (e) => {
-      if (e.code === 'Space') setIsPanning(false);
+      if (e.code === "Space") setIsPanning(false);
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
 
@@ -53,12 +53,15 @@ export default function Canvas3d({
   const offsetX = -halfW;
   const offsetZ = -halfL;
 
+  
+
   return (
-    <div style={{
-      width: '100%',
-      height: '100%',
-      background: 'linear-gradient(to bottom,rgb(66, 66, 66), #1a1a1a)', 
-    }}
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "linear-gradient(to bottom,rgb(66, 66, 66), #1a1a1a)",
+      }}
     >
       <Canvas
         shadows
@@ -66,15 +69,11 @@ export default function Canvas3d({
           position: [0, wallHeight * pxPerUnit * 0.75, roomL + 200],
           fov: 50,
         }}
-        style={{ background: 'transparent' }}
+        style={{ background: "transparent" }}
       >
         <ambientLight intensity={0.8} />
         <directionalLight position={[5, 20, 10]} intensity={1.5} castShadow />
-        <OrbitControls
-          enablePan={isPanning}
-          enableZoom
-          enableRotate
-        />
+        <OrbitControls enablePan={isPanning} enableZoom enableRotate />
 
         {/* Floor */}
         <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>

@@ -139,7 +139,7 @@ h3 {
 
 .primary-btn::before {
   position: absolute;
-  content: "Get Started";
+  content: "Start Designing";
   color: #ffffff;
   display: flex;
   align-items: center;

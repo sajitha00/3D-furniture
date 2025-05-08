@@ -1,36 +1,63 @@
 import React, { useState } from "react";
-import { useLocation, Navigate } from "react-router-dom";
+import { useLocation, Navigate, useNavigate } from "react-router-dom";
 import { CirclePicker } from "react-color";
 import Canvas2d from "../components/Canvas2d/Canvas2d";
 import Canvas3d from "../components/Canvas3d/Canvas3d";
 import logo from "../assets/LOGO.svg";
 import "../styles/DesignPage.css";
 import { FURNITURE_ICONS } from "../data/furnitureMetadata";
-import {db} from "../services/firebaseConfig";
+import { db } from "../services/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 
 const COLOURS = [
-  "#FF4136", "#FF0080", "#B10DC9", "#85144b",
-  "#4154f1", "#0074D9", "#7FDBFF", "#39CCCC",
-  "#3D9970", "#2ECC40", "#01FF70", "#FFDC00",
-  "#FF851B", "#111111", "#AAAAAA",
+  "#FF4136",
+  "#FF0080",
+  "#B10DC9",
+  "#85144b",
+  "#4154f1",
+  "#0074D9",
+  "#7FDBFF",
+  "#39CCCC",
+  "#3D9970",
+  "#2ECC40",
+  "#01FF70",
+  "#FFDC00",
+  "#FF851B",
+  "#111111",
+  "#AAAAAA",
 ];
 
 export default function DesignPage() {
+  const location = useLocation();
+  const designData = location.state;
+  const nav = useNavigate(); 
+
   const { state } = useLocation();
-  if (!state || !state.width || !state.length) {
+  if (!designData || !designData.width || !designData.length) {
     return <Navigate to="/" replace />;
   }
 
-  const { width, length, unit } = state;
-  const [, setSelectedColor] = useState(null);
-  const [paintTab, setPaintTab] = useState("wall");
-  const [furnitures, setFurnitures] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
+
+  const [width, setWidth] = useState(designData?.width || 10);
+  const [length, setLength] = useState(designData?.length || 10);
+  const [unit, setUnit] = useState(designData?.unit || "m");
+  const [wallHeight, setWallHeight] = useState(designData?.wallHeight || 2);
+  const [wallColor, setWallColor] = useState(
+    designData?.wallColor || "#dddddd"
+  );
+  const [floorColor, setFloorColor] = useState(
+    designData?.floorColor || "#eeeeee"
+  );
+  const [furnitures, setFurnitures] = useState(designData?.furnitures || []);
+
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [paintTab, setPaintTab] = useState("wall");
   const [showGrid, setShowGrid] = useState(true);
-  const [wallHeight, setWallHeight] = useState(2);
-  const [wallColor, setWallColor] = useState("#dddddd");
-  const [floorColor, setFloorColor] = useState("#eeeeee");
+
+
+  
+
 
   const handleAddFurniture = (type, w, h, rawScale = 1) => {
     setFurnitures((f) => [
@@ -60,38 +87,40 @@ export default function DesignPage() {
   };
 
   //save function
+
+  
   const saveDesign = async () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (!user || !user.uid) {
-    alert("You must be signed in to save a design.");
-    return;
-  }
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || !user.uid) {
+      alert("You must be signed in to save a design.");
+      return;
+    }
 
-  const designData = {
-    width,
-    length,
-    unit,
-    wallHeight,
-    wallColor,
-    floorColor,
-    furnitures,
-    createdAt: new Date().toISOString(),
-    userId: user.uid,          // associate with user
-    userEmail: user.email,
+    const designData = {
+      width,
+      length,
+      unit,
+      wallHeight,
+      wallColor,
+      floorColor,
+      furnitures,
+      createdAt: new Date().toISOString(),
+      userId: user.uid, // associate with user
+      userEmail: user.email,
+    };
+
+    try {
+      await addDoc(collection(db, "designs"), designData);
+      alert("Design saved successfully!");
+    } catch (err) {
+      alert("Failed to save design: " + err.message);
+    }
   };
-
-  try {
-    await addDoc(collection(db, "designs"), designData);
-    alert("Design saved successfully!");
-  } catch (err) {
-    alert("Failed to save design: " + err.message);
-  }
-};
 
   return (
     <div className="design-page">
       <header className="dp-header">
-        <div className="dp-brand">
+        <div className="dp-brand" onClick={() => nav("/")}>
           <img src={logo} alt="Logo" />
           <span>IDEAL Abode</span>
         </div>
@@ -100,14 +129,18 @@ export default function DesignPage() {
             <button
               className="dp-delete-btn"
               onClick={() => {
-                setFurnitures((prev) => prev.filter((f) => f.id !== selectedId));
+                setFurnitures((prev) =>
+                  prev.filter((f) => f.id !== selectedId)
+                );
                 setSelectedId(null);
               }}
             >
               🗑 Delete
             </button>
           )}
-          <button className="dp-save-btn" onClick={saveDesign}>Save</button>
+          <button className="dp-save-btn" onClick={saveDesign}>
+            Save
+          </button>
         </div>
       </header>
 
@@ -144,7 +177,7 @@ export default function DesignPage() {
                   min={-180}
                   max={180}
                   step={1}
-                  value={furnitures.find(f => f.id === selectedId)?.rotY || 0}
+                  value={furnitures.find((f) => f.id === selectedId)?.rotY || 0}
                   onChange={(e) => {
                     const newDeg = parseFloat(e.target.value);
                     setFurnitures((prev) =>
@@ -168,7 +201,9 @@ export default function DesignPage() {
                   min={0.5}
                   max={2}
                   step={0.01}
-                  value={furnitures.find(f => f.id === selectedId)?.scaleFix || 1}
+                  value={
+                    furnitures.find((f) => f.id === selectedId)?.scaleFix || 1
+                  }
                   onChange={(e) => {
                     const newScale = parseFloat(e.target.value);
                     setFurnitures((prev) =>
@@ -181,7 +216,6 @@ export default function DesignPage() {
               </label>
             </section>
           )}
-
 
           <section className="dp-section">
             <h3>Paint</h3>
