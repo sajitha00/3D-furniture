@@ -6,7 +6,14 @@ import sketch from "../assets/images/chairsketch.png";
 import render from "../assets/images/chair3d.png";
 import arrow from "../assets/images/dashedarrow.png";
 import logo from "../assets/LOGO.svg";
-import { supabase } from "../services/supabaseClient";
+
+// Firebase imports
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { app } from "../services/firebaseConfig"; // adjust path to where you initialize Firebase
+
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -19,35 +26,35 @@ const Signup = () => {
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, username, contactNumber, password } = formData;
 
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    const userId = data.user?.id || data.session?.user?.id;
+    try {
+      // 1. Create user in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-    if (error || !userId) {
-      alert("Sign up error: " + (error?.message || "No user ID returned."));
-      return;
-    }
+      // 2. Optionally set the displayName on the Auth user
+      await updateProfile(user, { displayName: username });
 
-    const { error: profileError } = await supabase.from("profiles").insert([
-      {
-        id: userId,
-        username,
-        contact_number: contactNumber,
+      // 3. Create a Firestore document in "profiles"
+      await setDoc(doc(db, "profiles", user.uid), {
+        id: user.uid,
         email,
-      },
-    ]);
+        username,
+        contactNumber,
+        createdAt: new Date().toISOString(),
+      });
 
-    if (profileError) {
-      alert("Error saving profile: " + profileError.message);
-    } else {
-      alert("Account created! Redirecting to sign in...");
-      navigate("/signin"); // ✅ Redirect to signin
+      alert("Account created! Redirecting to sign in…");
+      navigate("/signin");
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert("Sign up error: " + error.message);
     }
   };
 
@@ -65,7 +72,7 @@ const Signup = () => {
             <h1 className="signup-title">Sign up</h1>
             <div className="signin-link">
               <p>Have an Account?</p>
-              <Link to="/Signin">Sign in</Link> {/* ✅ Fixed case */}
+              <Link to="/signin">Sign in</Link>
             </div>
           </div>
 
