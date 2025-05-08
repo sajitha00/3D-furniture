@@ -2,7 +2,17 @@ import React from "react";
 import PropTypes from "prop-types";
 import "./CanvasSetupPopup.css";
 
-const CanvasSetupPopup = ({ isOpen, onClose, onCreate, width, setWidth, length, setLength }) => {
+const CanvasSetupPopup = ({
+  isOpen,
+  onClose,
+  onCreate,
+  width,
+  setWidth,
+  length,
+  setLength,
+  unit,
+  toggleUnit,
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -18,7 +28,8 @@ const CanvasSetupPopup = ({ isOpen, onClose, onCreate, width, setWidth, length, 
               id="room-width"
               type="number"
               min="0"
-              placeholder="m"
+              step="0.01"
+              placeholder={unit}
               value={width}
               onChange={(e) => setWidth(e.target.value)}
             />
@@ -30,14 +41,29 @@ const CanvasSetupPopup = ({ isOpen, onClose, onCreate, width, setWidth, length, 
               id="room-length"
               type="number"
               min="0"
-              placeholder="m"
+              step="0.01"
+              placeholder={unit}
               value={length}
               onChange={(e) => setLength(e.target.value)}
             />
           </div>
         </div>
 
-        <div className="grid-label">Grid</div>
+        <div className="unit-toggle-block">
+          <div className="unit-label">Measurement Unit</div>
+          <div className="toggle-button-cover">
+            <div className="button" id="button-3">
+              <input
+                type="checkbox"
+                className="checkbox"
+                onChange={toggleUnit}
+                checked={unit === "m"}
+              />
+              <div className="knobs">{unit}</div>
+              <div className="layer"></div>
+            </div>
+          </div>
+        </div>
 
         <button className="popup-button" onClick={onCreate}>
           Create
@@ -46,6 +72,7 @@ const CanvasSetupPopup = ({ isOpen, onClose, onCreate, width, setWidth, length, 
     </div>
   );
 };
+
 CanvasSetupPopup.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
@@ -54,6 +81,8 @@ CanvasSetupPopup.propTypes = {
   setWidth: PropTypes.func.isRequired,
   length: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   setLength: PropTypes.func.isRequired,
+  unit: PropTypes.string.isRequired,
+  toggleUnit: PropTypes.func.isRequired,
 };
 
 export default CanvasSetupPopup;
