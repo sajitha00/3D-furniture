@@ -1,0 +1,15 @@
+/* Canvas2d.css */
+.canvas-container {
+  /* enforce the true room pixel size */
+  position: relative;
+  overflow: hidden;         /* hide overflow if you prefer */
+}
+.canvas-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow: auto;           /* scrollbars when the room is bigger than viewport */
+  cursor: grab;
+}
+.canvas-wrapper:active {
+  cursor: grabbing;
+}
