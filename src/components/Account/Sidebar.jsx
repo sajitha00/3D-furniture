@@ -2,22 +2,22 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
-import { auth } from "../../services/firebaseConfig";   // ← your existing config
-import useAuth from "../../hooks/useAuth";              // default import
+import { auth } from "../../services/firebaseConfig";   
+import useAuth from "../../hooks/useAuth";              
 import "./Sidebar.css";
 
 export default function Sidebar({ selectedTab, onTabChange }) {
   const navigate = useNavigate();
-  const { user } = useAuth();        // if you ever want to show user info
+  const { user } = useAuth();        
 
   /* ------------------------------------------------------------------ */
   /*  Handle logout                                                     */
   /* ------------------------------------------------------------------ */
   const handleLogout = async () => {
     try {
-      await signOut(auth);                 // 1) tell Firebase
-      localStorage.removeItem("user");     // 2) clean cached copy (optional)
-      navigate("/", { replace: true });  // 3) send them to login
+      await signOut(auth);                 
+      localStorage.removeItem("user");     
+      navigate("/", { replace: true });  
     } catch (err) {
       console.error("Sign‑out failed", err);
       alert("Could not sign out, please try again");
