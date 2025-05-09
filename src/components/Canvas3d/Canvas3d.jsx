@@ -52,11 +52,9 @@ export default function Canvas3d({
   const offsetX = -halfW;
   const offsetZ = -halfL;
 
-  // Safe texture loading with useLoader
   const wallTex = wallTexture ? useLoader(THREE.TextureLoader, wallTexture) : null;
   const floorTex = floorTexture ? useLoader(THREE.TextureLoader, floorTexture) : null;
 
-  // Repeat wrapping when loaded
   useEffect(() => {
   if (wallTex) {
     wallTex.wrapS = wallTex.wrapT = THREE.RepeatWrapping;
