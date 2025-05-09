@@ -98,9 +98,6 @@ export default function DesignPage() {
       createdAt: new Date().toISOString(),
       userId: user.uid,
       userEmail: user.email,
-      // You can store wallTexture and floorTexture here if needed:
-      // wallTexture,
-      // floorTexture,
     };
 
     try {
@@ -228,11 +225,11 @@ export default function DesignPage() {
               onChangeComplete={(c) => {
                 if (paintTab === "wall") {
                   setWallColor(c.hex);
-                  setWallTexture(null); // 💡 force texture off
+                  setWallTexture(null); 
                 }
                 if (paintTab === "floor") {
                   setFloorColor(c.hex);
-                  setFloorTexture(null); // 💡 force texture off
+                  setFloorTexture(null); 
                 }
                 setSelectedColor(c.hex);
               }}
