@@ -26,7 +26,11 @@ const TEXTURE_FILES = [
   "beigecement.png",
   "rocks.png",
   "sprucewood.png",
-  "whitebricks.png"
+  "whitebricks.png",
+  "checkred.png",
+  "darkoak.png",
+  "whitetiles.png",
+  "cementpillar.png"
 ];
 
 
