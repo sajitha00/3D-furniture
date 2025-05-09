@@ -81,7 +81,7 @@ body,
   display: flex;
   flex: 1;
   overflow: hidden;
-  padding: 16px; /* optional gutter around main */
+  padding: 16px; 
   box-sizing: border-box;
 }
 
@@ -161,18 +161,15 @@ body,
 
 /* ─ COLORS GRID (wrapper) ─ */
 .dp-colors-grid {
-  /* this flex container simply ensures the picker itself is flush */
   display: flex;
 }
 
 /* ─ OVERRIDE CirclePicker ─ */
 .dp-circle-picker {
-  /* remove outer padding/margin */
   padding: 0 !important;
   margin: 0 !important;
 }
 .dp-circle-picker .circle-picker__colors {
-  /* force a neat 4-by-? grid of 26px circles + 8px gap */
   display: grid !important;
   grid-template-columns: repeat(auto-fill, minmax(26px, 26px));
   grid-gap: 8px !important;
@@ -183,7 +180,6 @@ body,
 }
 
 .dp-canvas2d {
-  /* the Konva canvas will scroll inside this */
   overflow: hidden;
 }
 
@@ -193,7 +189,7 @@ body,
   flex: 1;
   border-radius: 8px;
   overflow: hidden;
-  background: #f0f0f002; /* or whatever bg you like */
+  background: #f0f0f002; 
 }
 .dp-canvas2d,
 .dp-canvas3d {

@@ -1,4 +1,3 @@
-// src/pages/Signup.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Signup.css";
@@ -10,7 +9,7 @@ import logo from "../assets/LOGO.svg";
 // Firebase imports
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
-import { app } from "../services/firebaseConfig"; // adjust path to where you initialize Firebase
+import { app } from "../services/firebaseConfig"; 
 
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -34,14 +33,11 @@ const Signup = () => {
     const { email, username, contactNumber, password } = formData;
 
     try {
-      // 1. Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // 2. Optionally set the displayName on the Auth user
       await updateProfile(user, { displayName: username });
 
-      // 3. Create a Firestore document in "profiles"
       await setDoc(doc(db, "profiles", user.uid), {
         id: user.uid,
         email,

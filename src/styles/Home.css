@@ -50,12 +50,11 @@ h3 {
       #404040 76.92%,
       #141414 100%
     );
-  position: relative; /* Added for navbar overlay */
+  position: relative; 
 }
 
 .hero-content {
   max-width: 800px;
-  /* Add top padding to accommodate the navbar */
   padding-top: 2rem;
 }
 

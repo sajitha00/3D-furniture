@@ -87,8 +87,6 @@ export default function DesignPage() {
   };
 
   //save function
-
-  
   const saveDesign = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user || !user.uid) {
@@ -105,7 +103,7 @@ export default function DesignPage() {
       floorColor,
       furnitures,
       createdAt: new Date().toISOString(),
-      userId: user.uid, // associate with user
+      userId: user.uid, 
       userEmail: user.email,
     };
 
