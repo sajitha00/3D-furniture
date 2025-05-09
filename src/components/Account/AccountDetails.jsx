@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "./AccountDetails.css";
 import defaultProfileImg from "../../assets/images/Profile.png";
-import { supabase } from "../../services/supabaseClient";
+import { auth, firestore, storage } from "../../services/firebaseConfig"; // Adjust the import path as necessary
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function AccountDetails() {
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const [profileImage, setProfileImage] = useState(storedUser?.photoURL || "/default-user.png");
 
   const [formData, setFormData] = useState({
     full_name: "",
@@ -23,48 +28,34 @@ export default function AccountDetails() {
   });
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      setLoading(true);
-      const { data: userData, error: authError } =
-        await supabase.auth.getUser();
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUserId(user.uid);
+        setFormData((prev) => ({ ...prev, email: user.email }));
 
-      if (authError || !userData?.user?.id) {
-        console.error("Auth error:", authError);
+        const docRef = doc(firestore, "profiles", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const profile = docSnap.data();
+          setFormData((prev) => ({
+            ...prev,
+            ...profile,
+          }));
+          
+          // Set profile image from Firestore if available
+          if (profile.profile_image) {
+            setProfileImage(profile.profile_image);
+          }
+        }
         setLoading(false);
-        return;
-      }
-
-      const uid = userData.user.id;
-      setUserId(uid);
-
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", uid)
-        .single();
-
-      if (profileError) {
-        console.error("Profile fetch error:", profileError);
       } else {
-        setFormData({
-          full_name: profile.full_name || "",
-          gender: profile.gender || "",
-          dob: profile.dob || "",
-          nationality: profile.nationality || "",
-          address_line: profile.address_line || "",
-          city: profile.city || "",
-          province: profile.province || "",
-          country: profile.country || "",
-          contact_number: profile.contact_number || "",
-          email: profile.email || "",
-          profile_image: profile.profile_image || "",
-        });
+        setUserId(null);
+        setLoading(false);
       }
+    });
 
-      setLoading(false);
-    };
-
-    fetchProfile();
+    return () => unsubscribe();
   }, []);
 
   const handleChange = (e) => {
@@ -76,77 +67,108 @@ export default function AccountDetails() {
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    if (!file || !userId) return;
-
+    if (!file || !userId) {
+      alert("No file selected or user not logged in");
+      return;
+    }
+  
     setUploading(true);
-    const fileExt = file.name.split(".").pop();
-    const filePath = `${userId}.${fileExt}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(filePath, file, { upsert: true });
-
-    if (uploadError) {
-      alert("Upload failed: " + uploadError.message);
+  
+    try {
+      // Create a reference with a more reliable path structure
+      const storageRef = ref(storage, `profile_images/${userId}`);
+      const fileRef = ref(storageRef, file.name);
+      
+      console.log("Uploading file to:", fileRef._location.path);
+      
+      // Step 1: Upload the image file to Firebase Storage
+      const snapshot = await uploadBytes(fileRef, file);
+      console.log("File uploaded successfully");
+      
+      // Step 2: Get the image download URL after successful upload
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      console.log("Download URL obtained:", downloadURL);
+      
+      // Step 3: Update Firestore with the image URL
+      const profileRef = doc(firestore, "profiles", userId);
+      await updateDoc(profileRef, {
+        profile_image: downloadURL
+      });
+      console.log("Firestore document updated with new image URL");
+      
+      // Step 4: Update the local state with the new image URL
+      setFormData((prev) => ({
+        ...prev,
+        profile_image: downloadURL,
+      }));
+      setProfileImage(downloadURL);
+      
+      alert("Profile image updated successfully!");
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert(`Upload failed: ${err.message}`);
+    } finally {
       setUploading(false);
-      return;
     }
+  };
 
-    const { data: publicData, error: publicUrlError } = supabase.storage
-      .from("avatars")
-      .getPublicUrl(filePath);
-
-    const imageUrl = publicData?.publicUrl;
-    console.log("✅ Uploaded image URL:", imageUrl);
-
-    if (publicUrlError || !imageUrl) {
-      alert("Failed to retrieve image URL.");
-      setUploading(false);
-      return;
+  // Optional: Add a preview function before upload
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Show a preview before uploading
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfileImage(e.target.result); // Temporary preview
+      };
+      reader.readAsDataURL(file);
+      
+      // Then proceed with upload
+      handleImageUpload(e);
     }
-
-    // Save image URL to DB
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({ profile_image: imageUrl })
-      .eq("id", userId);
-
-    if (updateError) {
-      alert("Error saving image URL: " + updateError.message);
-    } else {
-      setFormData((prev) => ({ ...prev, profile_image: imageUrl }));
-      alert("Profile image updated!");
-    }
-
-    setUploading(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!userId) return;
-
-    const updateFields = {
-      full_name: formData.full_name,
-      gender: formData.gender,
-      dob: formData.dob,
-      nationality: formData.nationality,
-      address_line: formData.address_line,
-      city: formData.city,
-      province: formData.province,
-      country: formData.country,
-    };
-
-    const { error } = await supabase
-      .from("profiles")
-      .update(updateFields)
-      .eq("id", userId);
-
-    if (error) {
-      alert("Error saving profile: " + error.message);
-    } else {
+    if (!userId) {
+      alert("User not logged in");
+      return;
+    }
+  
+    try {
+      // Include ALL profile data including the profile_image
+      const profileData = {
+        full_name: formData.full_name,
+        gender: formData.gender,
+        dob: formData.dob,
+        nationality: formData.nationality,
+        address_line: formData.address_line,
+        city: formData.city,
+        province: formData.province,
+        country: formData.country,
+        contact_number: formData.contact_number,
+        email: formData.email,
+        profile_image: formData.profile_image // Ensure profile image URL is included
+      };
+  
+      console.log("Saving profile data:", profileData);
+      
+      // Reference to the user's profile document
+      const profileRef = doc(firestore, "profiles", userId);
+      
+      // Update the document with merge:true to only update the provided fields
+      await setDoc(profileRef, profileData, { merge: true });
+      
+      console.log("Profile updated successfully");
       alert("Profile updated successfully!");
+      
+    } catch (err) {
+      console.error("Error saving profile:", err);
+      alert(`Error saving profile: ${err.message}`);
     }
   };
+
+  if (loading) return <div className="loading-container">Loading...</div>;
 
   return (
     <div className="account-container">
@@ -159,12 +181,16 @@ export default function AccountDetails() {
             src={formData.profile_image || defaultProfileImg}
             alt="User Profile"
           />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            disabled={uploading}
-          />
+          {uploading ? (
+            <div className="upload-spinner">Uploading...</div>
+          ) : (
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              disabled={uploading}
+            />
+          )}
         </div>
 
         <form className="details-grid" onSubmit={handleSubmit}>

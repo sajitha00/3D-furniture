@@ -10,7 +10,7 @@ export default function Canvas2d({
   onFurnitureDragEnd,
   showGrid,
 }) {
-  const px = unit === "m" ? 50 : 15;
+  const px = 30;
   const roomW = width * px;
   const roomH = length * px;
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -59,7 +59,7 @@ export default function Canvas2d({
                 fill="skyblue"
                 stroke={f.id === selectedId ? "orange" : "#000"}
                 strokeWidth={2}
-                rotation={(f.rot*180)/Math.PI}
+                rotation={f.rotY || 0}
                 offsetX={wPx/2}
                 offsetY={hPx/2}
                 draggable
@@ -69,10 +69,10 @@ export default function Canvas2d({
                 })}
                 onClick={() => onSelectFurniture(f.id)}
                 onDragEnd={e => {
-                  const newX = e.target.x() / px;
-                  const newY = e.target.y() / px;
+                  const newX = (e.target.x() - f.w * px / 2) / px;
+                  const newY = (e.target.y() - f.h * px / 2) / px;
                   onFurnitureDragEnd(f.id, newX, newY);
-                }}
+                }}                
               />
             );
           })}

@@ -1,15 +1,19 @@
 // src/pages/Signin.jsx
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Signin.css";
 import sketch from "../assets/images/chairsketch.png";
 import render from "../assets/images/chair3d.png";
 import arrow from "../assets/images/dashedarrow.png";
 import logo from "../assets/LOGO.svg";
-import { supabase } from "../services/supabaseClient";
+
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../services/firebaseConfig"; // your Firebase config
 
 const Signin = () => {
-  const [loginData, setLoginData] = useState({ identifier: "", password: "" });
+  const navigate = useNavigate();
+
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
 
   const handleChange = (e) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
@@ -17,36 +21,27 @@ const Signin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { identifier, password } = loginData;
-
-    let email = identifier;
-
-    if (!identifier.includes("@")) {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("email")
-        .eq("username", identifier)
-        .single();
-
-      if (error || !data) {
-        alert("Invalid username or email.");
-        return;
-      }
-
-      email = data.email;
-    }
-
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (signInError) {
-      alert("Sign in failed: " + signInError.message);
-    } else {
+    const { email, password } = loginData;
+  
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+  
+      // Save user data to localStorage
+      localStorage.setItem("user", JSON.stringify({
+        uid: user.uid,
+        email: user.email,
+        photoURL: user.photoURL || "", // If profile image is set
+      }));
+  
       alert("Signed in successfully!");
+      navigate("/");
+    } catch (error) {
+      alert("Sign in failed: " + error.message);
     }
   };
+  
+  
 
   return (
     <div className="signin-page-background">
@@ -71,13 +66,13 @@ const Signin = () => {
 
           <form className="signin-form" onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="identifier">Username or email address</label>
+              <label htmlFor="email">Email address</label>
               <input
-                type="text"
-                id="identifier"
-                name="identifier"
-                placeholder="Username or email"
-                value={loginData.identifier}
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Email"
+                value={loginData.email}
                 onChange={handleChange}
                 required
               />

@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { useLocation, Navigate } from "react-router-dom";
+import { useLocation, Navigate, useNavigate } from "react-router-dom";
 import { CirclePicker } from "react-color";
 import Canvas2d from "../components/Canvas2d/Canvas2d";
 import Canvas3d from "../components/Canvas3d/Canvas3d";
 import logo from "../assets/LOGO.svg";
 import "../styles/DesignPage.css";
+import { FURNITURE_ICONS } from "../data/furnitureMetadata";
+import { db } from "../services/firebaseConfig";
+import { collection, addDoc } from "firebase/firestore";
 
 const COLOURS = [
   "#FF4136",
@@ -24,57 +27,54 @@ const COLOURS = [
   "#AAAAAA",
 ];
 
-const FURNITURE_ICONS = [
-  {
-    type: "chair",
-    url: "https://img.icons8.com/ios/32/chair.png",
-    w: 1,
-    h: 1,
-    scaleFix: 0.012,
-    yFix: 0, // or tweak later if model floats
-    rotFix: 0,
-  },
-  {
-    type: "couch",
-    url: "https://img.icons8.com/ios-filled/32/sofa.png",
-    w: 2,
-    h: 1,
-    scaleFix: 0.007,
-    yFix: 0,
-    rotFix: -Math.PI / 2,
-  },
-  {
-    type: "beddouble",
-    url: "https://img.icons8.com/ios-filled/50/double-bed.png",
-    w: 2,
-    h: 1.5,
-    scaleFix: 0.01,
-    yFix: 0,
-    rotFix: 0,
-  },
-];
-
-
 export default function DesignPage() {
+  const location = useLocation();
+  const designData = location.state;
+  const nav = useNavigate(); 
+
   const { state } = useLocation();
-  if (!state || !state.width || !state.length) {
+  if (!designData || !designData.width || !designData.length) {
     return <Navigate to="/" replace />;
   }
-  const { width, length, unit } = state;
 
-  // paint & colour
-  const [, setSelectedColor] = useState(null);
-  const [paintTab, setPaintTab] = useState("wall");
-
-  // furniture list
-  const [furnitures, setFurnitures] = useState([]);
-  // which one is selected
   const [selectedId, setSelectedId] = useState(null);
 
-  const handleAddFurniture = (type, w, h, rawScale) => {
+  const [width, setWidth] = useState(designData?.width || 10);
+  const [length, setLength] = useState(designData?.length || 10);
+  const [unit, setUnit] = useState(designData?.unit || "m");
+  const [wallHeight, setWallHeight] = useState(designData?.wallHeight || 2);
+  const [wallColor, setWallColor] = useState(
+    designData?.wallColor || "#dddddd"
+  );
+  const [floorColor, setFloorColor] = useState(
+    designData?.floorColor || "#eeeeee"
+  );
+  const [furnitures, setFurnitures] = useState(designData?.furnitures || []);
+
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [paintTab, setPaintTab] = useState("wall");
+  const [showGrid, setShowGrid] = useState(true);
+
+
+  
+
+
+  const handleAddFurniture = (type, w, h, rawScale = 1) => {
     setFurnitures((f) => [
       ...f,
-      { id: Date.now(), x: 10, y: 10, w, h, type, rot: 0, rawScale },
+      {
+        id: Date.now(),
+        x: 1,
+        y: 1,
+        w,
+        h,
+        type,
+        rotY: 0,
+        rotX: 0,
+        rotZ: 0,
+        rawScale,
+        scaleFix: 1,
+      },
     ]);
   };
 
@@ -86,42 +86,74 @@ export default function DesignPage() {
     );
   };
 
-  // rotate +90°
-  const rotateSelected = () => {
-    if (!selectedId) return;
-    const f = furnitures.find((o) => o.id === selectedId);
-    handleDragEnd(selectedId, f.x, f.y, (f.rot + Math.PI / 2) % (2 * Math.PI));
-  };
+  //save function
 
-  const [showGrid, setShowGrid] = useState(true);
-  const [wallHeight, setWallHeight] = useState(2);
+  
+  const saveDesign = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || !user.uid) {
+      alert("You must be signed in to save a design.");
+      return;
+    }
+
+    const designData = {
+      width,
+      length,
+      unit,
+      wallHeight,
+      wallColor,
+      floorColor,
+      furnitures,
+      createdAt: new Date().toISOString(),
+      userId: user.uid, // associate with user
+      userEmail: user.email,
+    };
+
+    try {
+      await addDoc(collection(db, "designs"), designData);
+      alert("Design saved successfully!");
+    } catch (err) {
+      alert("Failed to save design: " + err.message);
+    }
+  };
 
   return (
     <div className="design-page">
       <header className="dp-header">
-        <div className="dp-brand">
+        <div className="dp-brand" onClick={() => nav("/")}>
           <img src={logo} alt="Logo" />
           <span>IDEAL Abode</span>
         </div>
         <div>
-          <button onClick={rotateSelected} disabled={!selectedId}>
-            Rotate ↻
+          {selectedId && (
+            <button
+              className="dp-delete-btn"
+              onClick={() => {
+                setFurnitures((prev) =>
+                  prev.filter((f) => f.id !== selectedId)
+                );
+                setSelectedId(null);
+              }}
+            >
+              🗑 Delete
+            </button>
+          )}
+          <button className="dp-save-btn" onClick={saveDesign}>
+            Save
           </button>
-          <button className="dp-save-btn">Save</button>
         </div>
       </header>
 
       <div className="dp-body">
         <aside className="dp-sidebar">
-          {/* Furniture Section */}
           <section className="dp-section">
             <h3>Furniture</h3>
             <div className="dp-card-grid">
-              {FURNITURE_ICONS.map(({ type, url, w, h }) => (
+              {FURNITURE_ICONS.map(({ type, url, w, h, rawScale }) => (
                 <div
                   key={type}
                   className="dp-card"
-                  onClick={() => handleAddFurniture(type, w, h)}
+                  onClick={() => handleAddFurniture(type, w, h, rawScale)}
                 >
                   <img
                     src={url}
@@ -135,7 +167,56 @@ export default function DesignPage() {
             </div>
           </section>
 
-          {/* Paint Section */}
+          {selectedId && (
+            <section className="dp-section">
+              <h3>Rotation</h3>
+              <label>
+                Rotate Y (Left/Right)
+                <input
+                  type="range"
+                  min={-180}
+                  max={180}
+                  step={1}
+                  value={furnitures.find((f) => f.id === selectedId)?.rotY || 0}
+                  onChange={(e) => {
+                    const newDeg = parseFloat(e.target.value);
+                    setFurnitures((prev) =>
+                      prev.map((f) =>
+                        f.id === selectedId ? { ...f, rotY: newDeg } : f
+                      )
+                    );
+                  }}
+                />
+              </label>
+            </section>
+          )}
+
+          {selectedId && (
+            <section className="dp-section">
+              <h3>Scale</h3>
+              <label>
+                Resize (0.5× to 2×)
+                <input
+                  type="range"
+                  min={0.5}
+                  max={2}
+                  step={0.01}
+                  value={
+                    furnitures.find((f) => f.id === selectedId)?.scaleFix || 1
+                  }
+                  onChange={(e) => {
+                    const newScale = parseFloat(e.target.value);
+                    setFurnitures((prev) =>
+                      prev.map((f) =>
+                        f.id === selectedId ? { ...f, scaleFix: newScale } : f
+                      )
+                    );
+                  }}
+                />
+              </label>
+            </section>
+          )}
+
           <section className="dp-section">
             <h3>Paint</h3>
             <div className="dp-paint-tabs">
@@ -149,14 +230,8 @@ export default function DesignPage() {
                 </button>
               ))}
             </div>
-            <div className="dp-card-grid">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="dp-card placeholder" />
-              ))}
-            </div>
           </section>
 
-          {/* Color Section */}
           <section className="dp-section">
             <h3>Color</h3>
             <CirclePicker
@@ -164,11 +239,14 @@ export default function DesignPage() {
               colors={COLOURS}
               circleSize={26}
               circleSpacing={8}
-              onChangeComplete={(c) => setSelectedColor(c.hex)}
+              onChangeComplete={(c) => {
+                if (paintTab === "wall") setWallColor(c.hex);
+                if (paintTab === "floor") setFloorColor(c.hex);
+                setSelectedColor(c.hex);
+              }}
             />
           </section>
 
-          {/* Canvas Settings */}
           <section className="dp-section">
             <h3>Canvas Settings</h3>
             <label className="dp-toggle">
@@ -181,7 +259,6 @@ export default function DesignPage() {
             </label>
           </section>
 
-          {/* Wall Height */}
           <section className="dp-section">
             <h3>Wall Height</h3>
             <input
@@ -219,6 +296,8 @@ export default function DesignPage() {
               unit={unit}
               wallHeight={wallHeight}
               furnitures={furnitures}
+              wallColor={wallColor}
+              floorColor={floorColor}
             />
           </div>
         </main>
