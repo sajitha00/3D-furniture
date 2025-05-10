@@ -15,7 +15,6 @@ export default function Furniture3D({
 }) {
   const { scene } = useGLTF(`/models/${type}.glb`)
 
-  // compute bounding box once
   const { size, center, min } = useMemo(() => {
     const box = new THREE.Box3().setFromObject(scene)
     return {
@@ -25,13 +24,11 @@ export default function Furniture3D({
     }
   }, [scene])
 
-  // uniform scale → fits declared w×h footprint
   const scaleX      = (w * pxPerUnit) / size.x
   const scaleZ      = (h * pxPerUnit) / size.z
   const uniformScale = Math.min(scaleX, scaleZ) * rawScale * (scaleFix || 1);
 
 
-  // now lift so that the *bottom* (min.y) is at world y=0
   const yOffset = -min.y * uniformScale
 
   return (

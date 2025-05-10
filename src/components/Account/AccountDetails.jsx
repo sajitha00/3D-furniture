@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./AccountDetails.css";
 import defaultProfileImg from "../../assets/images/Profile.png";
-import { auth, firestore, storage } from "../../services/firebaseConfig"; // Adjust the import path as necessary
+import { auth, firestore, storage } from "../../services/firebaseConfig"; 
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { onAuthStateChanged } from "firebase/auth";
@@ -43,7 +43,7 @@ export default function AccountDetails() {
             ...profile,
           }));
           
-          // Set profile image from Firestore if available
+          
           if (profile.profile_image) {
             setProfileImage(profile.profile_image);
           }
@@ -75,28 +75,23 @@ export default function AccountDetails() {
     setUploading(true);
   
     try {
-      // Create a reference with a more reliable path structure
       const storageRef = ref(storage, `profile_images/${userId}`);
       const fileRef = ref(storageRef, file.name);
       
       console.log("Uploading file to:", fileRef._location.path);
       
-      // Step 1: Upload the image file to Firebase Storage
       const snapshot = await uploadBytes(fileRef, file);
       console.log("File uploaded successfully");
       
-      // Step 2: Get the image download URL after successful upload
       const downloadURL = await getDownloadURL(snapshot.ref);
       console.log("Download URL obtained:", downloadURL);
       
-      // Step 3: Update Firestore with the image URL
       const profileRef = doc(firestore, "profiles", userId);
       await updateDoc(profileRef, {
         profile_image: downloadURL
       });
       console.log("Firestore document updated with new image URL");
       
-      // Step 4: Update the local state with the new image URL
       setFormData((prev) => ({
         ...prev,
         profile_image: downloadURL,
@@ -112,18 +107,18 @@ export default function AccountDetails() {
     }
   };
 
-  // Optional: Add a preview function before upload
+  
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Show a preview before uploading
+      
       const reader = new FileReader();
       reader.onload = (e) => {
-        setProfileImage(e.target.result); // Temporary preview
+        setProfileImage(e.target.result); 
       };
       reader.readAsDataURL(file);
       
-      // Then proceed with upload
+      
       handleImageUpload(e);
     }
   };
@@ -136,7 +131,6 @@ export default function AccountDetails() {
     }
   
     try {
-      // Include ALL profile data including the profile_image
       const profileData = {
         full_name: formData.full_name,
         gender: formData.gender,
@@ -148,15 +142,13 @@ export default function AccountDetails() {
         country: formData.country,
         contact_number: formData.contact_number,
         email: formData.email,
-        profile_image: formData.profile_image // Ensure profile image URL is included
+        profile_image: formData.profile_image 
       };
   
       console.log("Saving profile data:", profileData);
       
-      // Reference to the user's profile document
       const profileRef = doc(firestore, "profiles", userId);
       
-      // Update the document with merge:true to only update the provided fields
       await setDoc(profileRef, profileData, { merge: true });
       
       console.log("Profile updated successfully");

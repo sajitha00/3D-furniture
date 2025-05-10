@@ -8,9 +8,8 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const dropdownRef      = useRef(null);
   const nav              = useNavigate();
-  const { user, loading } = useAuth();     // <- signed‑in user (null if not)
+  const { user, loading } = useAuth();     
 
-  /* ───────── close dropdown when clicking outside ───────── */
   useEffect(() => {
     const outside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -21,10 +20,9 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", outside);
   }, []);
 
-  /* ───────── helpers ───────── */
   const go = (pathIfAuth) => {
-    setOpen(false);               // close dropdown
-    if (loading) return;          // still checking auth – do nothing
+    setOpen(false);               
+    if (loading) return;          
     if (!user) {
       nav("/signin", { replace: true, state: { from: pathIfAuth } });
     } else {

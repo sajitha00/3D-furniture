@@ -1,4 +1,3 @@
-// src/pages/Signin.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Signin.css";
@@ -8,7 +7,7 @@ import arrow from "../assets/images/dashedarrow.png";
 import logo from "../assets/LOGO.svg";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../services/firebaseConfig"; // your Firebase config
+import { auth } from "../services/firebaseConfig"; 
 
 const Signin = () => {
   const navigate = useNavigate();
@@ -27,11 +26,10 @@ const Signin = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
   
-      // Save user data to localStorage
       localStorage.setItem("user", JSON.stringify({
         uid: user.uid,
         email: user.email,
-        photoURL: user.photoURL || "", // If profile image is set
+        photoURL: user.photoURL || "", 
       }));
   
       alert("Signed in successfully!");

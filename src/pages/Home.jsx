@@ -23,9 +23,7 @@ const Home = () => {
   };
 
   const handleCreate = () => {
-   // Navigate *before* clearing so state is read correctly
     if (!user) {
-      // not signed in – send them to login (optionally preserve intent)
       navigate("/signin", { replace: true, state: { from: "/" } });
       return;
     }

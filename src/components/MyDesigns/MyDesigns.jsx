@@ -39,7 +39,7 @@ export default function MyDesigns() {
   }, []);
 
   const handleEdit = (design) => {
-    navigate("/design", { state: design }); // passes saved design to DesignPage
+    navigate("/design", { state: design }); 
   };
 
   const handleDelete = async (designId) => {
