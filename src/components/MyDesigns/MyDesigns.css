@@ -29,15 +29,15 @@
 }
 
 .designs-controls span:nth-child(1) {
-  color: #aaa; /* "Sort : Date" */
+  color: #aaa; 
 }
 
 .designs-controls span:nth-child(2) {
-  color: #aaa; /* "View : Grid" */
+  color: #aaa; 
 }
 
 .designs-controls span:nth-child(3) {
-  color: white; /* "Select" */
+  color: white; 
 }
 
 .new-button {
@@ -135,13 +135,13 @@
 
 @media (max-width: 1024px) {
   .designs-grid {
-    grid-template-columns: repeat(3, 1fr); /* 3 cards per row on tablets */
+    grid-template-columns: repeat(3, 1fr); 
   }
 }
 
 @media (max-width: 768px) {
   .designs-grid {
-    grid-template-columns: 1fr; /* Single column on mobile */
+    grid-template-columns: 1fr; 
   }
 
   .designs-header {

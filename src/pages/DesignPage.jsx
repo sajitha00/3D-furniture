@@ -10,54 +10,52 @@ import { db } from "../services/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 
 const COLOURS = [
-  "#FF4136",
-  "#FF0080",
-  "#B10DC9",
-  "#85144b",
-  "#4154f1",
-  "#0074D9",
-  "#7FDBFF",
-  "#39CCCC",
-  "#3D9970",
-  "#2ECC40",
-  "#01FF70",
-  "#FFDC00",
-  "#FF851B",
-  "#111111",
-  "#AAAAAA",
+  "#FF4136", "#FF0080", "#B10DC9", "#85144b",
+  "#4154f1", "#0074D9", "#7FDBFF", "#39CCCC",
+  "#3D9970", "#2ECC40", "#01FF70", "#FFDC00",
+  "#FF851B", "#111111", "#AAAAAA",
 ];
+
+const TEXTURE_FILES = [
+  "oakwood.png",
+  "polishedwood.png",
+  "darkbrick.png",
+  "lightbrick.png",
+  "wallpaper.png",
+  "cement.png",
+  "beigecement.png",
+  "rocks.png",
+  "sprucewood.png",
+  "whitebricks.png",
+  "checkred.png",
+  "darkoak.png",
+  "whitetiles.png",
+  "cementpillar.png"
+];
+
 
 export default function DesignPage() {
   const location = useLocation();
   const designData = location.state;
-  const nav = useNavigate(); 
+  const nav = useNavigate();
 
-  const { state } = useLocation();
   if (!designData || !designData.width || !designData.length) {
     return <Navigate to="/" replace />;
   }
 
   const [selectedId, setSelectedId] = useState(null);
-
   const [width, setWidth] = useState(designData?.width || 10);
   const [length, setLength] = useState(designData?.length || 10);
   const [unit, setUnit] = useState(designData?.unit || "m");
   const [wallHeight, setWallHeight] = useState(designData?.wallHeight || 2);
-  const [wallColor, setWallColor] = useState(
-    designData?.wallColor || "#dddddd"
-  );
-  const [floorColor, setFloorColor] = useState(
-    designData?.floorColor || "#eeeeee"
-  );
+  const [wallColor, setWallColor] = useState(designData?.wallColor || "#dddddd");
+  const [floorColor, setFloorColor] = useState(designData?.floorColor || "#eeeeee");
   const [furnitures, setFurnitures] = useState(designData?.furnitures || []);
-
+  const [wallTexture, setWallTexture] = useState(null);
+  const [floorTexture, setFloorTexture] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [paintTab, setPaintTab] = useState("wall");
   const [showGrid, setShowGrid] = useState(true);
-
-
-  
-
 
   const handleAddFurniture = (type, w, h, rawScale = 1) => {
     setFurnitures((f) => [
@@ -86,9 +84,6 @@ export default function DesignPage() {
     );
   };
 
-  //save function
-
-  
   const saveDesign = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user || !user.uid) {
@@ -105,7 +100,7 @@ export default function DesignPage() {
       floorColor,
       furnitures,
       createdAt: new Date().toISOString(),
-      userId: user.uid, // associate with user
+      userId: user.uid,
       userEmail: user.email,
     };
 
@@ -155,13 +150,7 @@ export default function DesignPage() {
                   className="dp-card"
                   onClick={() => handleAddFurniture(type, w, h, rawScale)}
                 >
-                  <img
-                    src={url}
-                    alt={type}
-                    className="dp-card-icon"
-                    width={32}
-                    height={32}
-                  />
+                  <img src={url} alt={type} className="dp-card-icon" width={32} height={32} />
                 </div>
               ))}
             </div>
@@ -201,9 +190,7 @@ export default function DesignPage() {
                   min={0.5}
                   max={2}
                   step={0.01}
-                  value={
-                    furnitures.find((f) => f.id === selectedId)?.scaleFix || 1
-                  }
+                  value={furnitures.find((f) => f.id === selectedId)?.scaleFix || 1}
                   onChange={(e) => {
                     const newScale = parseFloat(e.target.value);
                     setFurnitures((prev) =>
@@ -240,12 +227,47 @@ export default function DesignPage() {
               circleSize={26}
               circleSpacing={8}
               onChangeComplete={(c) => {
-                if (paintTab === "wall") setWallColor(c.hex);
-                if (paintTab === "floor") setFloorColor(c.hex);
+                if (paintTab === "wall") {
+                  setWallColor(c.hex);
+                  setWallTexture(null); 
+                }
+                if (paintTab === "floor") {
+                  setFloorColor(c.hex);
+                  setFloorTexture(null); 
+                }
                 setSelectedColor(c.hex);
               }}
+
             />
           </section>
+
+          <section className="dp-section">
+            <h3>Textures</h3>
+            <div className="dp-texture-grid">
+              {TEXTURE_FILES.map((file) => (
+                <img
+                  key={file}
+                  src={`/textures/${file}`}
+                  alt={file}
+                  className="dp-texture-thumb"
+                  onClick={() => {
+                    if (paintTab === "wall") setWallTexture(`/textures/${file}`);
+                    if (paintTab === "floor") setFloorTexture(`/textures/${file}`);
+                  }}
+                />
+              ))}
+            </div>
+            <button
+              className="dp-clear-texture-btn"
+              onClick={() => {
+                if (paintTab === "wall") setWallTexture(null);
+                if (paintTab === "floor") setFloorTexture(null);
+              }}
+            >
+              Clear Texture
+            </button>
+        </section>
+
 
           <section className="dp-section">
             <h3>Canvas Settings</h3>
@@ -298,6 +320,8 @@ export default function DesignPage() {
               furnitures={furnitures}
               wallColor={wallColor}
               floorColor={floorColor}
+              wallTexture={wallTexture}
+              floorTexture={floorTexture}
             />
           </div>
         </main>

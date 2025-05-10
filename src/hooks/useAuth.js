@@ -2,12 +2,7 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../services/firebaseConfig";
 
-/**
- * Returns { user, loading }
- * user === null  → not signed‑in
- * user === object→ signed‑in
- * loading true   → still checking
- */
+
 export default function useAuth() {
   const [user, setUser]     = useState(() => JSON.parse(localStorage.getItem("user")) || null);
   const [loading, setLoading] = useState(true);

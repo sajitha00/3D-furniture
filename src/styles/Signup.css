@@ -175,7 +175,7 @@
   border-radius: 6px;
   background-color: rgb(255, 255, 255);
   font-size: 1rem;
-  color: black; /* ✅ Fix: Make text visible while typing */
+  color: black; 
   box-sizing: border-box;
 }
 
@@ -185,7 +185,7 @@
 }
 
 .form-group input:focus {
-  outline: 2px solid #888; /* Optional: Add focus border */
+  outline: 2px solid #888; 
 }
 
 /* Buttons */
